@@ -52,7 +52,7 @@ const Hero = () => {
                     <div className="w-full lg:w-3/5 flex flex-col items-center lg:items-start">
                         <div className="flex justify-center items-center w-full">
                             <h1 className="text-3xl font-bold mb-4">
-                                {location.pathname === "/pokemon" ? "Pokemon" : "Berry"}
+                                {location.pathname === "/bag" ? "Berry" : "Pokemon"}
                             </h1>
                         </div>
                         <Routes>
