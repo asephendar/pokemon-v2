@@ -1,0 +1,25 @@
+@keyframes slideDown {
+    0% {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    50% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  .sliding-text {
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  
+  .sliding-text span {
+    display: block;
+    animation: slideDown 0.5s ease-in-out;
+  }
