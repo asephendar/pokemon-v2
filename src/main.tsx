@@ -8,7 +8,7 @@ import Pokemon from './pages/pokemon.tsx';
 import Bag from './pages/bag.tsx';
 import { BagProvider } from './contexts/BagContext.tsx';
 import { Provider } from 'react-redux';
-import store from './redux/store.tsx';
+import store from './redux/store.ts';
 
 export default function Main() {
   return (

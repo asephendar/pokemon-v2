@@ -150,14 +150,22 @@ const Navbar: React.FC<NavbarProps> = ({ pokemonCount, berryCount }) => {
                     className="lg:hidden hidden absolute top-14 right-0 bg-base-100 shadow-md w-full z-50 p-4"
                 >
                     <div className="menu menu-vertical space-y-4">
-                        <div className="indicator">
-                            <span className="indicator-item badge badge-primary">5</span>
-                            <button className="btn btn-sm hover:text-primary">Pokemon List</button>
-                        </div>
-                        <div className="indicator">
-                            <span className="indicator-item badge badge-primary">50</span>
-                            <button className="btn btn-sm hover:text-primary">Bag</button>
-                        </div>
+                        <Link to="/pokemon">
+                            <div className="indicator">
+                                <span className="indicator-item badge badge-primary badge-sm">
+                                    {pokemonCount}
+                                </span>
+                                <button className="btn btn-sm hover:text-primary">Pokemon List</button>
+                            </div>
+                        </Link>
+                        <Link to="/bag">
+                            <div className="indicator">
+                                <span className="indicator-item badge badge-primary badge-sm">
+                                    {berryCount}
+                                </span>
+                                <button className="btn btn-sm hover:text-primary">Bag</button>
+                            </div>
+                        </Link>
                         <label className="flex items-center cursor-pointer space-x-2">
                             <div className="grid place-items-center">
                                 <input
