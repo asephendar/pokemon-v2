@@ -124,24 +124,25 @@ const AvatarPokemon = ({ addToTeam, team }: AvatarPokemonProps) => {
                         </div>
                     );
                 })}
+            </div>
 
-                <div className="join mt-4 flex justify-center lg:justify-start">
-                    <button
-                        className="join-item btn"
-                        onClick={handlePreviousPage}
-                        disabled={currentPage === 1}
-                    >
-                        «
-                    </button>
-                    <button className="join-item btn">Page {currentPage}</button>
-                    <button
-                        className="join-item btn"
-                        onClick={handleNextPage}
-                        disabled={currentPage === totalPages}
-                    >
-                        »
-                    </button>
-                </div>
+            <div className="join mt-4 flex justify-center lg:justify-center">
+                <button
+                    className="join-item btn"
+                    onClick={handlePreviousPage}
+                    disabled={currentPage === 1}
+                >
+                    «
+                </button>
+                <button className="join-item btn">Page {currentPage}</button>
+                <button
+                    className="join-item btn"
+                    onClick={handleNextPage}
+                    disabled={currentPage === totalPages}
+                >
+                    »
+                </button>
+            </div>
 
                 {/* Modal */}
                 {selectedPokemon && (
@@ -205,7 +206,6 @@ const AvatarPokemon = ({ addToTeam, team }: AvatarPokemonProps) => {
                         </div>
                     </div>
                 )}
-            </div>
         </>
     );
 };
