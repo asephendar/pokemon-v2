@@ -26,9 +26,9 @@ interface AvatarBagProps {
 }
 
 const AvatarBag = ({ addToTeamBag }: AvatarBagProps) => {
-    const { bag, setBag, currentPage, totalPages, setCurrentPage } = useBag();
+    const { bag, setBag, currentPage, totalPages, setCurrentPage, setLoadedPages } = useBag();
     const [selectedBerry, setSelectedBerry] = useState<Berry | null>(null);
-    
+
     // const [currentPage, setCurrentPage] = useState(1);
     // const [totalPages, setTotalPages] = useState(1);
 
@@ -90,17 +90,43 @@ const AvatarBag = ({ addToTeamBag }: AvatarBagProps) => {
         setCurrentPage((prev) => Math.min(prev + 1, totalPages));
     };
 
+    // const handleAddToTeamBag = (berry: Berry) => {
+    //     if (berry.dailyLimit > 0) {
+    //         const updatedBag = bag.map(b =>
+    //             b.name === berry.name
+    //                 ? { ...b, dailyLimit: b.dailyLimit - 1 }
+    //                 : b
+    //         );
+    //         setBag(updatedBag);
+    //         addToTeamBag(berry);
+    //     }
+    // };
+
     const handleAddToTeamBag = (berry: Berry) => {
         if (berry.dailyLimit > 0) {
-            const updatedBag = bag.map(b =>
-                b.name === berry.name
-                    ? { ...b, dailyLimit: b.dailyLimit - 1 }
-                    : b
+            // Update the berry's daily limit within the current page's data
+            setBag(prevBag =>
+                prevBag.map(b =>
+                    b.name === berry.name ? { ...b, dailyLimit: b.dailyLimit - 1 } : b
+                )
             );
-            setBag(updatedBag);
+
+            // Update the dailyLimit in the corresponding page within loadedPages
+            setLoadedPages(prevPages => {
+                const updatedPage = prevPages[currentPage].map(b =>
+                    b.name === berry.name ? { ...b, dailyLimit: b.dailyLimit - 1 } : b
+                );
+
+                return {
+                    ...prevPages,
+                    [currentPage]: updatedPage,
+                };
+            });
+
             addToTeamBag(berry);
         }
     };
+
 
     return (
         <>

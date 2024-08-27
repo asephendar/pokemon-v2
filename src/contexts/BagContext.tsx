@@ -7,6 +7,8 @@ interface BagContextType {
     currentPage: number;
     totalPages: number;
     setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
+    loadedPages: { [key: number]: Berry[] };
+    setLoadedPages: React.Dispatch<React.SetStateAction<{ [key: number]: Berry[] }>>;
 }
 
 const BagContext = createContext<BagContextType | undefined>(undefined);
@@ -15,52 +17,61 @@ export const BagProvider = ({ children }: { children: ReactNode }) => {
     const [bag, setBag] = useState<Berry[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [loadedPages, setLoadedPages] = useState<{ [key: number]: Berry[] }>({});
 
     useEffect(() => {
         const fetchBagData = async () => {
-            try {
-                const limit = 12;
-                const offset = (currentPage - 1) * limit;
-                const response = await fetch(`https://pokeapi.co/api/v2/berry?limit=${limit}&offset=${offset}`);
-                const data = await response.json();
+            if (loadedPages[currentPage]) {
+                setBag(loadedPages[currentPage]);
+            } else {
+                try {
+                    const limit = 12;
+                    const offset = (currentPage - 1) * limit;
+                    const response = await fetch(`https://pokeapi.co/api/v2/berry?limit=${limit}&offset=${offset}`);
+                    const data = await response.json();
 
-                setTotalPages(Math.ceil(data.count / limit));
+                    setTotalPages(Math.ceil(data.count / limit));
 
-                const bagData = await Promise.all(
-                    data.results.map(async (berry: { url: string }) => {
-                        const berryResponse = await fetch(berry.url);
-                        const berryDetails = await berryResponse.json();
+                    const bagData = await Promise.all(
+                        data.results.map(async (berry: { url: string }) => {
+                            const berryResponse = await fetch(berry.url);
+                            const berryDetails = await berryResponse.json();
 
-                        const itemResponse = await fetch(berryDetails.item.url);
-                        const itemDetails = await itemResponse.json();
+                            const itemResponse = await fetch(berryDetails.item.url);
+                            const itemDetails = await itemResponse.json();
 
-                        return {
-                            name: berryDetails.name,
-                            item: {
-                                name: itemDetails.name,
-                                url: itemDetails.url,
-                                image: itemDetails.sprites.default,
-                                effect_entries: itemDetails.effect_entries,
-                            },
-                            firmness: berryDetails.firmness.name,
-                            flavors: berryDetails.flavors,
-                            natural_gift_type: berryDetails.natural_gift_type.name,
-                            natural_gift_power: berryDetails.natural_gift_power,
-                            dailyLimit: 10,
-                        } as Berry;
-                    })
-                );
-                setBag(bagData);
-            } catch (error) {
-                console.error("Error fetching bag data:", error);
+                            return {
+                                name: berryDetails.name,
+                                item: {
+                                    name: itemDetails.name,
+                                    url: itemDetails.url,
+                                    image: itemDetails.sprites.default,
+                                    effect_entries: itemDetails.effect_entries,
+                                },
+                                firmness: berryDetails.firmness.name,
+                                flavors: berryDetails.flavors,
+                                natural_gift_type: berryDetails.natural_gift_type.name,
+                                natural_gift_power: berryDetails.natural_gift_power,
+                                dailyLimit: 10,
+                            } as Berry;
+                        })
+                    );
+                    setBag(bagData);
+                    setLoadedPages(prev => ({
+                        ...prev,
+                        [currentPage]: bagData,
+                    }));
+                } catch (error) {
+                    console.error("Error fetching bag data:", error);
+                }
             }
         };
 
         fetchBagData();
-    }, [currentPage]);
+    }, [currentPage, loadedPages]);
 
     return (
-        <BagContext.Provider value={{ bag, setBag, currentPage, totalPages, setCurrentPage }}>
+        <BagContext.Provider value={{ bag, setBag, currentPage, totalPages, setCurrentPage, setLoadedPages, loadedPages }}>
             {children}
         </BagContext.Provider>
     );
